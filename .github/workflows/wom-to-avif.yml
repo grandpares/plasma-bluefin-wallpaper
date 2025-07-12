@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: Get current Month
         run: |
+          date +%-m
           NMONTH=$(date +%-m)
           SMONTH=$(((NMONTH + 6 - 1) % 12 + 1))
           if [[ $NMONTH -lt 10 ]]; then
@@ -22,6 +23,7 @@ jobs:
           if [[ $SMONTH -lt 10 ]]; then
             SMONTH="0$SMONTH"
           fi
+          echo "$NMONTH $SMONTH"
       
       - name: Download JXL for current month
         run: |
@@ -29,6 +31,7 @@ jobs:
           curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$NMONTH-bluefin-night.jxl"
           curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$SMONTH-bluefin-day.jxl"
           curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$SMONTH-bluefin-night.jxl"
+          ls
 
       - name: Install dependencies
         run: sudo apt -y install libjxl-tools plasma-wallpaper-dynamic
