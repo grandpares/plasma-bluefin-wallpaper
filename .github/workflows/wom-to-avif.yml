@@ -36,6 +36,7 @@ jobs:
       - name: Convert to PNG
         run: |
           for wallpaper in *.jxl ; do
+            echo "Processing $wallpaper"
             djxl "$wallpaper" "${wallpaper%.*}.png"
           done
 
