@@ -1,0 +1,92 @@
+---
+name: Bluefin Wallpaper of the Month to Plasma
+on:
+  schedule:
+    - cron: '0 4 * * 1' # At 04:00 AM, only on Monday
+  workflow_dispatch:
+
+jobs:
+  convert-release:
+    name: Release WoM as AVIF
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get current Month
+        run: |
+          NMONTH=$(date +%-m)
+          SMONTH=$(((NMONTH + 6 - 1) % 12 + 1))
+          if [[ $NMONTH -lt 10 ]]; then
+            NMONTH="0$NMONTH"
+          fi
+          if [[ $SMONTH -lt 10 ]]; then
+            SMONTH="0$SMONTH"
+          fi
+      
+      - name: Download JXL for current month
+        run: |
+          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$NMONTH-bluefin-day.jxl"
+          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$NMONTH-bluefin-night.jxl"
+          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$SMONTH-bluefin-day.jxl"
+          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$SMONTH-bluefin-night.jxl"
+
+      - name: Install dependencies
+        run: sudo apt -y install libjxl-tools plasma-wallpaper-dynamic
+
+      - name: Convert to PNG
+        run: |
+          for wallpaper in *.jxl ; do
+            djxl "$wallpaper" "${wallpaper%.*}.png"
+          done
+
+      - name: Create manifests
+        run: |
+          cat > manifest-north.json<< EOF
+          {
+            "Type": "day-night",
+            "Meta": [
+              {
+                "TimeOfDay": "day",
+                "FileName": "$NMONTH-bluefin-day.png"
+              }, {
+                "TimeOfDay": "night",
+                "FileName": "$NMONTH-bluefin-night.png"
+              }
+            ]
+          }
+          EOF
+          cat > manifest-south.json<< EOF
+          {
+            "Type": "day-night",
+            "Meta": [
+              {
+                "TimeOfDay": "day",
+                "FileName": "$SMONTH-bluefin-day.png"
+              }, {
+                "TimeOfDay": "night",
+                "FileName": "$SMONTH-bluefin-night.png"
+              }
+            ]
+          }
+          EOF
+      
+      - name: Encode AVIFs
+        run: |
+          kdynamicwallpaperbuilder manifest-north.json --output north.avif
+          kdynamicwallpaperbuilder manifest-south.json --output south.avif
+
+      - name: Checksum
+        run: |
+          md5sum north.avif north.md5
+          md5sum south.avif south.md5
+
+      - name: Determine tag
+        id: tag
+        run: echo "tag=v$(date -u +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        with:
+          tag:   ${{ steps.tag.outputs.tag }}
+          name:  "Automated build ${{ steps.tag.outputs.tag }}"
+          artifacts: "*.avif,*.md5"
+          token: ${{ secrets.GITHUB_TOKEN }}    
