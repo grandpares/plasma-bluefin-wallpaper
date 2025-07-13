@@ -10,6 +10,8 @@ jobs:
   convert-release:
     name: Release WoM as AVIF
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Get current Month
