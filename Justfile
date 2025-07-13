@@ -18,7 +18,7 @@ install hemi:
     #!/bin/bash
     set -oux pipefail
 
-    cd ~/.local/share/wallpapers/bluefin
+    cd ~/.local/share/wallpapers/Bluefin
     curl -Lo {{hemi}}.md5 https://github.com/grandpares/plasma-bluefin-wallpaper/releases/download/latest/{{hemi}}.md5
     md5sum --status -c {{hemi}}.md5 \
     || curl -Lo {{hemi}}.avif https://github.com/grandpares/plasma-bluefin-wallpaper/releases/download/latest/{{hemi}}.avif''' > ~/.local/bin/update-bluefin-wallpaper.sh
