@@ -81,8 +81,8 @@ jobs:
 
       - name: Checksum
         run: |
-          md5sum north.avif north.md5
-          md5sum south.avif south.md5
+          md5sum north.avif > north.md5
+          md5sum south.avif > south.md5
 
       - name: Determine tag
         id: tag
