@@ -3,7 +3,6 @@ name: Bluefin Wallpaper of the Month to Plasma
 on:
   schedule:
     - cron: '0 4 * * 1' # At 04:00 AM, only on Monday
-  pull_request:
   workflow_dispatch:
 
 jobs:
