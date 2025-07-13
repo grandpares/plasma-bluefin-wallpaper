@@ -14,7 +14,6 @@ jobs:
     steps:
       - name: Get current Month
         run: |
-          date +%-m
           NMONTH=$(date +%-m)
           SMONTH=$(((NMONTH + 6 - 1) % 12 + 1))
           if [[ $NMONTH -lt 10 ]]; then
@@ -23,7 +22,8 @@ jobs:
           if [[ $SMONTH -lt 10 ]]; then
             SMONTH="0$SMONTH"
           fi
-          echo "$NMONTH $SMONTH"
+          echo "NMONTH=$NMONTH" >> "$GITHUB_ENV"
+          echo "SMONTH=$SMONTH" >> "$GITHUB_ENV"
       
       - name: Download JXL for current month
         run: |
