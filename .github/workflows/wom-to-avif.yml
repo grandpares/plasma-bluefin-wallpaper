@@ -37,6 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          export DEBIAN_FRONTEND=noninteractive
           sudo apt update
           sudo apt -y install plasma-wallpaper-dynamic kimageformat-plugins
 
