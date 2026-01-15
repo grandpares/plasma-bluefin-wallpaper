@@ -28,10 +28,10 @@ jobs:
       
       - name: Download JXL for current month
         run: |
-          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$NMONTH-bluefin-day.jxl"
-          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$NMONTH-bluefin-night.jxl"
-          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$SMONTH-bluefin-day.jxl"
-          curl -LO "https://github.com/ublue-os/packages/raw/refs/heads/main/packages/bluefin/wallpapers/images/$SMONTH-bluefin-night.jxl"
+          curl -LO "https://github.com/ublue-os/artwork/raw/refs/heads/main/wallpapers/bluefin/images/$NMONTH-bluefin-day.jxl"
+          curl -LO "https://github.com/ublue-os/artwork/raw/refs/heads/main/wallpapers/bluefin/images/$NMONTH-bluefin-night.jxl"
+          curl -LO "https://github.com/ublue-os/artwork/raw/refs/heads/main/wallpapers/bluefin/images/$SMONTH-bluefin-day.jxl"
+          curl -LO "https://github.com/ublue-os/artwork/raw/refs/heads/main/wallpapers/bluefin/images/$SMONTH-bluefin-night.jxl"
           ls
 
       - name: Install dependencies
