@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    container: docker.io/library/ubuntu:25.04
 
     steps:
       - name: Get current Month
@@ -37,9 +36,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          export DEBIAN_FRONTEND=noninteractive
           sudo apt update
-          sudo apt -y install plasma-wallpaper-dynamic kimageformat-plugins
+          sudo apt -y install libjxl-tools plasma-wallpaper-dynamic
+
+      - name: Convert to PNG
+        run: |
+          for wallpaper in *.jxl ; do
+            echo "Processing $wallpaper"
+            djxl "$wallpaper" "${wallpaper%.*}.png"
+          done
 
       - name: Create manifests
         run: |
@@ -49,10 +54,10 @@ jobs:
             "Meta": [
               {
                 "TimeOfDay": "day",
-                "FileName": "$NMONTH-bluefin-day.jxl"
+                "FileName": "$NMONTH-bluefin-day.png"
               }, {
                 "TimeOfDay": "night",
-                "FileName": "$NMONTH-bluefin-night.jxl"
+                "FileName": "$NMONTH-bluefin-night.png"
               }
             ]
           }
@@ -63,10 +68,10 @@ jobs:
             "Meta": [
               {
                 "TimeOfDay": "day",
-                "FileName": "$SMONTH-bluefin-day.jxl"
+                "FileName": "$SMONTH-bluefin-day.png"
               }, {
                 "TimeOfDay": "night",
-                "FileName": "$SMONTH-bluefin-night.jxl"
+                "FileName": "$SMONTH-bluefin-night.png"
               }
             ]
           }
@@ -74,8 +79,8 @@ jobs:
       
       - name: Encode AVIFs
         run: |
-          kdynamicwallpaperbuilder --speed 8 manifest-north.json --output north.avif
-          kdynamicwallpaperbuilder --speed 8 manifest-south.json --output south.avif
+          kdynamicwallpaperbuilder manifest-north.json --output north.avif
+          kdynamicwallpaperbuilder manifest-south.json --output south.avif
 
       - name: Checksum
         run: |
